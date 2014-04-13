@@ -37,12 +37,12 @@ How the above should read:
         after {find:div#moar_leftnav} append {find:.content}
         inside {find:.content} append {find:article}
         inside {find:article} append {find:.article-body, .articleBody, .article-content, .articleContent}
-        inside {find:.article-body, .articleBody, .article-content, .articleContent} create {find:<div id="nested_created"></div>}
+        inside {find:.article-body, .articleBody, .article-content, .articleContent} create {create:<div id="nested_created"></div>}
         inside {find:article} prepend {find:heading}
         inside {find:.content} append {find:div#stuff}
         inside {find:.content} prepend-create {create:<div id="nested_created"></div>}
-        inside {find:.content} hide {find:.hide-me}
         inside {find:.content} remove {find:.delete-me}
+        inside {find:.content} hide {find:.hide-me}
         after {find:.content} create {create:<div>Insert this content</div>}
         after {create:<div>Insert this content</div>} create {create:<div src="inject.htm"></div>}
         after {create:<div src="inject.htm"></div>} append {find:footer}

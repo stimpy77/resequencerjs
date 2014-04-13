@@ -183,13 +183,13 @@
 
             if (createInsideAtTopL3Regexp.test(tline)) {
                 position = POSITIONS.INSIDE;
-                element = {find: createInsideAtTopL3Regexp.exec(tline)[2]};
+                element = {create: createInsideAtTopL3Regexp.exec(tline)[2]};
                 action = ACTIONS.PREPENDCREATE;
                 nesting = 3;
             }
             else if (createInsideL3Regexp.test(tline)) {
                 position = POSITIONS.INSIDE;
-                element = {find: createInsideL3Regexp.exec(tline)[2]};
+                element = {create: createInsideL3Regexp.exec(tline)[2]};
                 action = ACTIONS.CREATE;
                 nesting = 3;
             }
