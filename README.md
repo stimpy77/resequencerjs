@@ -16,7 +16,7 @@ The referenced element might look something like this:
         .content
             > article
             > > .article-body, .articleBody, .article-content, .articleContent
-            > > ++ <div id="nested_created"></div> (inject and put at top of article)
+            > > ++ <div id="nested_created"></div> (inject into article)
             > ^ heading (precedes article content .. gotcha!)
             > div#stuff
             > ++ ^ <div id="nested_created"></div> (inject and put at top of content)
