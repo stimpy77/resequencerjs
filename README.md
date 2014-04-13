@@ -51,8 +51,9 @@ interpreted by the Resequencer might look something like this:
         near {find:footer} hide {find:.hidden_stuff}
     </script>
 
-And actually the above output is the current status of this script's work in progress; the commands are parsed out.
-The actual re-sequencing of HTML is not implemented yet, pending some design feedback from .. well, anybody really.
+And actually the above output is the current status of this script's work in progress; the commands are parsed out. The
+easy part of using jQuery to put stuff in place is still pending implementation as I'm simultaneously seeking design
+feedback.
 
 ### Why? ###
 
