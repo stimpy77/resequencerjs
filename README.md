@@ -32,22 +32,22 @@ The referenced element might look something like this:
 The above is what would actually be written by the designer. How the above should read in pseudo-code as
 interpreted by the Resequencer might look something like this:
 
-> at the top of the body, prepend {find:nav}
-> after {find:nav} append {find:div#moar_leftnav}
-> after {find:div#moar_leftnav} append {find:.content}
-> inside {find:.content} append {find:article}
-> inside {find:article} append {find:.article-body, .articleBody, .article-content, .articleContent}
-> inside {find:.article-body, .articleBody, .article-content, .articleContent} create {create:<div id="nested_created"></div>}
-> inside {find:article} prepend {find:heading}
-> inside {find:.content} append {find:div#stuff}
-> inside {find:.content} prepend-create {create:<div id="nested_created"></div>}
-> inside {find:.content} remove {find:.delete-me}
-> inside {find:.content} hide {find:.hide-me}
-> after {find:.content} create {create:<div>Insert this content</div>}
-> after {create:<div>Insert this content</div>} create {create:<div src="inject.htm"></div>}
-> after {create:<div src="inject.htm"></div>} append {find:footer}
-> near {find:footer} remove {find:.unwanted}
-> near {find:footer} hide {find:.hidden_stuff}
+    at the top of the body, prepend {find:nav}
+    after {find:nav} append {find:div#moar_leftnav}
+    after {find:div#moar_leftnav} append {find:.content}
+    inside {find:.content} append {find:article}
+    inside {find:article} append {find:.article-body, .articleBody, .article-content, .articleContent}
+    inside {find:.article-body, .articleBody, .article-content, .articleContent} create {create:<div id="nested_created"></div>}
+    inside {find:article} prepend {find:heading}
+    inside {find:.content} append {find:div#stuff}
+    inside {find:.content} prepend-create {create:<div id="nested_created"></div>}
+    inside {find:.content} remove {find:.delete-me}
+    inside {find:.content} hide {find:.hide-me}
+    after {find:.content} create {create:<div>Insert this content</div>}
+    after {create:<div>Insert this content</div>} create {create:<div src="inject.htm"></div>}
+    after {create:<div src="inject.htm"></div>} append {find:footer}
+    near {find:footer} remove {find:.unwanted}
+    near {find:footer} hide {find:.hidden_stuff}
 
 And actually the above output is the current status of this script's work in progress; the commands are parsed out. The
 easy part of using jQuery to put stuff in place is still pending implementation as I'm simultaneously seeking design
