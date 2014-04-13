@@ -42,30 +42,29 @@
     <script id="resequence_definition" type="text/plain">
         nav
         div#moar_leftnav
-        content
+        .content
             > article
-            > ^ header (precedes article content)
+            > > .article-body, .articleBody, .article-content, .articleContent
+            > > ++ <div id="nested_created"></div> (inject and put at top of article)
+            > ^ heading (precedes article content .. gotcha!)
             > div#stuff
+            > ++ ^ <div id="nested_created"></div> (inject and put at top of content)
+            > -- .delete-me (from within content only)
+            > - .hide-me (within content)
         ++ <div>Insert this content</div>
         ++ <div src="inject.htm">(the contents herein will be replaced by inject.htm)</div>
         footer
-        - hidden_stuff (hide)
-        -- unwanted (delete entirely)
+        -- .unwanted (delete entirely)
+        - .hidden_stuff (hide)
     </script>
-    <!-- how the above should read .. -->
-    <script type="text/plain">
-        at the top of body put {find:nav}
-        after {find:nav} put {find:div#moar_leftnav}
-        after {find:div#moar_leftnav} put {find:content}
-        inside {find:content} put {find:article}
-        inside-at-top {find:content} put {find:header}
-        inside {find:content} put {find:div#stuff}
-        create-after {find:content} put {create:<div>Insert this content</div>}
-        create-after {create:<div>Insert this content</div>} put {create:<div src="inject.htm"></div>}
-        after {create:<div src="inject.htm"></div>} put {find:footer}
-        near {find:footer} hide {find:hidden_stuff}
-        near {find:footer} remove {find:unwanted}
-    </script>
+    <pre id="input-RO">
+
+    </pre>
+    <hr />
+    <div><em>How the above should read:</em></div>
+    <div>&nbsp;</div>
+    <pre id="output">
+    </pre>
     <script src="js/resequencer.js"></script>
     <script src="js/vendor/jquery.js"></script>
     <script src="js/foundation.min.js"></script>

@@ -13,31 +13,41 @@ The referenced element might look something like this:
     <script id="resequence_definition" type="text/plain">
         nav
         div#moar_leftnav
-        content
+        .content
             > article
-            > ^ header (precedes article content)
+            > > .article-body, .articleBody, .article-content, .articleContent
+            > > ++ <div id="nested_created"></div> (inject and put at top of article)
+            > ^ heading (precedes article content .. gotcha!)
             > div#stuff
+            > ++ ^ <div id="nested_created"></div> (inject and put at top of content)
+            > -- .delete-me (from within content only)
+            > - .hide-me (within content)
         ++ <div>Insert this content</div>
         ++ <div src="inject.htm">(the contents herein will be replaced by inject.htm)</div>
         footer
-        - hidden_stuff (hide)
-        -- unwanted (delete entirely)
+        -- .unwanted (delete entirely)
+        - .hidden_stuff (hide)
     </script>
 
 How the above should read:
 
     <script type="text/plain">
-        at the top of body put {find:nav}
-        after {find:nav} put {find:div#moar_leftnav}
-        after {find:div#moar_leftnav} put {find:content}
-        inside {find:content} put {find:article}
-        inside-at-top {find:content} put {find:header}
-        inside {find:content} put {find:div#stuff}
-        create-after {find:content} put {create:<div>Insert this content</div>}
-        create-after {create:<div>Insert this content</div>} put {create:<div src="inject.htm"></div>}
-        after {create:<div src="inject.htm"></div>} put {find:footer}
-        near {find:footer} hide {find:hidden_stuff}
-        near {find:footer} remove {find:unwanted}
+        at the top of the body, prepend {find:nav}
+        after {find:nav} append {find:div#moar_leftnav}
+        after {find:div#moar_leftnav} append {find:.content}
+        inside {find:.content} append {find:article}
+        inside {find:article} append {find:.article-body, .articleBody, .article-content, .articleContent}
+        inside {find:.article-body, .articleBody, .article-content, .articleContent} create {find:<div id="nested_created"></div>}
+        inside {find:article} prepend {find:heading}
+        inside {find:.content} append {find:div#stuff}
+        inside {find:.content} prepend-create {create:<div id="nested_created"></div>}
+        inside {find:.content} hide {find:.hide-me}
+        inside {find:.content} remove {find:.delete-me}
+        after {find:.content} create {create:<div>Insert this content</div>}
+        after {create:<div>Insert this content</div>} create {create:<div src="inject.htm"></div>}
+        after {create:<div src="inject.htm"></div>} append {find:footer}
+        near {find:footer} remove {find:.unwanted}
+        near {find:footer} hide {find:.hidden_stuff}
     </script>
 
 And actually the above output is the current status of this script's work in progress; the commands are parsed out.
@@ -54,12 +64,12 @@ The rules are very simple:
 
 1. Line items without an outliner token (`>`, `++`, etc) are assumed to be CSS selectors.
 1. `>` = append inside
-1. `> ^` = prepend inside ("inside-at-top")
+1. `> ^` = prepend inside (or "inside-at-top")
 1. `++` = inject new markup
 1. `-` = hide
 1. `--` = remove
 1. `( .. )` = not boobies. comments.
-1. You only need to nest one level deep. If you need to nest deeper then either the base definition is too complex or
+1. You only need to nest a couple levels deep. If you need to nest deeper then either the base definition is too complex or
    ur doing it rong.
 1. Srsly though if you want to work with things multiple levels deep, you must work with the deeper level stuff
    at the top level, then shift them down into their containers using the outline.

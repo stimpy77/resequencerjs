@@ -73,12 +73,18 @@
 
             // finally ...
             debugger;
+            var seqdefstr = seqdef;
             seqdef = parseResequenceDefinition(seqdef);
             var description = "";
             for (var cmd in seqdef) {
                 if (description.length > 0) description += "\n";
                 description += seqdef[cmd].toString();
             }
+
+            // all the following in this function due to non-implementation
+            $('body').css('margin', '10px');
+            $('pre#input-RO').html(seqdefstr.replace(/\</g, '&lt;'));
+            $('pre#output').html(description.replace(/\</g, '&lt;'));
             debugger;
             processResequence(seqdef, targetEl);
         }
@@ -116,30 +122,41 @@
                 }
             }
             var ret = position + " " + relativeToThisStr + " " + action + " " + elementStr;
+            if (relativeToThisStr === undefined) {
+                if (action == "append") action = "prepend";
+                ret = "at the top of the body, " + action + " " + elementStr;
+            }
             if (ret.trim) ret = ret.trim();
             return ret;
         }
     }
     var POSITIONS = {
-        "INSIDEATTOP": "inside-at-top",
         "INSIDE": "inside",
-        "CREATEAFTER": "create-after",
-        "CREATEINSIDE": "create-inside",
-        "CREATEINSIDEATTOP": "create-inside-at-top",
-        "HIDE": "near",
-        "REMOVE": "near"
+        "AFTER": "after",
+        "NEAR": "near"
     };
     var ACTIONS = {
-        "PUT": "put",
+        "APPEND": "append",
+        "PREPEND": "prepend",
+        "PREPENDCREATE": "prepend-create",
+        "CREATE": "create",
         "HIDE": "hide",
         "REMOVE": "remove"
     }
 
+    var createInsideAtTopL3Regexp = /^(\>\s*\>\s*\+\+\s*\^)\s*(.+)/;
+    var createInsideL3Regexp = /^(\>\s*\>\s*\+\+)\s*(.+)/;
+    var inside2Regexp = /^(\>\s*\>)\s*(.+)/;
+    var insideTop2Regexp = /^(\>\s*\>\s*\^)\s*(.+)/;
+    var hide3Regexp = /^(\>\s*\>\s*\-)\s*(.+)/;
+    var remove3Regexp = /^(\>\s*\>\s*\-\s*\-)\s*(.+)/;
+    var hide2Regexp = /^(\>\s*\-)\s*(.+)/;
+    var remove2Regexp = /^(\>\s*\-\s*\-)\s*(.+)/;
     var insideRegexp = /^(\>)\s*(.+)/;
     var insideTopRegexp = /^(\>\s*\^)\s*(.+)/;
     var createAfterRegexp = /^(\+\+)\s*(.+)/;
     var createInsideRegexp = /^(\>\s*\+\+)\s*(.+)/;
-    var createInsideAtTopRegexp = /^(\>\s*\^\s*\+\+)\s*(.+)/;
+    var createInsideAtTopRegexp = /^(\>\s*\+\+\s\^)\s*(.+)/;
     var hideRegexp = /^(\-)\s*(.+)/;
     var removeRegexp = /^(\-\s*\-)\s*(.+)/;
 
@@ -149,6 +166,7 @@
         var cmds = [];
         var previousElement;
         var previousNesting = 0;
+        var outerElements = [];
         var previousElementOuter;
         for (var l in cmdlines) {
             var line = cmdlines[l];
@@ -158,14 +176,80 @@
 
             var relativeTo = previousElement,
                 element    = {find: tline},
-                action     = ACTIONS.PUT,
-                position   = "after";
+                action     = ACTIONS.APPEND,
+                position   = POSITIONS.AFTER;
 
             var nesting = 0;
-            if (insideTopRegexp.test(tline)) {
-                position = POSITIONS.INSIDEATTOP;
-                element = {find: insideTopRegexp.exec(tline)[2]};
+
+            if (createInsideAtTopL3Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: createInsideAtTopL3Regexp.exec(tline)[2]};
+                action = ACTIONS.PREPENDCREATE;
+                nesting = 3;
+            }
+            else if (createInsideL3Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: createInsideL3Regexp.exec(tline)[2]};
+                action = ACTIONS.CREATE;
+                nesting = 3;
+            }
+            else if (inside2Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: inside2Regexp.exec(tline)[2]};
+                nesting = 2;
+            }
+            else if (insideTop2Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: insideTop2Regexp.exec(tline)[2]};
+                action = ACTIONS.PREPEND;
+                nesting = 2;
+            }
+            else if (remove3Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: remove3Regexp.exec(tline)[2]};
+                action = ACTIONS.REMOVE;
+                nesting = 2;
+            }
+            else if (hide3Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: hide3Regexp.exec(tline)[2]};
+                action = ACTIONS.HIDE;
+                nesting = 2;
+            }
+            else if (inside2Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: inside2Regexp.exec(tline)[2]};
+                nesting = 2;
+            }
+            else if (remove2Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: remove2Regexp.exec(tline)[2]};
+                action = ACTIONS.REMOVE;
                 nesting = 1;
+            }
+            else if (hide2Regexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: hide2Regexp.exec(tline)[2]};
+                action = ACTIONS.HIDE;
+                nesting = 1;
+            }
+            else if (createInsideAtTopRegexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {create: createInsideAtTopRegexp.exec(tline)[2]};
+                action = ACTIONS.PREPENDCREATE;
+                nesting = 1;
+            }
+            else if (createInsideRegexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {create: createInsideRegexp.exec(tline)[2]};
+                action = ACTIONS.CREATE;
+                nesting = 1;
+            }
+            else if (insideTopRegexp.test(tline)) {
+                position = POSITIONS.INSIDE;
+                element = {find: insideTopRegexp.exec(tline)[2]};
+                action = ACTIONS.PREPEND;
+                nesting = 2;
             }
             else if (insideRegexp.test(tline)) {
                 position = POSITIONS.INSIDE;
@@ -173,41 +257,38 @@
                 nesting = 1;
             }
             else if (createAfterRegexp.test(tline)) {
-                position = POSITIONS.CREATEAFTER;
+                position = POSITIONS.AFTER;
                 element = {create: createAfterRegexp.exec(tline)[2]};
-            }
-            else if (createInsideRegexp.test(tline)) {
-                position = POSITIONS.CREATEINSIDE;
-                element = {create: createInsideRegexp.exec(tline)[2]};
-                nesting = 1;
-            }
-            else if (createInsideAtTopRegexp.test(tline)) {
-                position = POSITIONS.CREATEINSIDEATTOP;
-                element = {create: createInsideAtTopRegexp.exec(tline)[2]};
-                nesting = 1;
+                action = ACTIONS.CREATE;
             }
             else if (removeRegexp.test(tline)) {
-                position = POSITIONS.REMOVE;
+                position = POSITIONS.NEAR;
                 element = {find: removeRegexp.exec(tline)[2]};
                 action = ACTIONS.REMOVE;
-                nesting = 1;
+                nesting = 0;
             }
             else if (hideRegexp.test(tline)) {
-                position = POSITIONS.HIDE;
+                position = POSITIONS.NEAR;
                 element = {find: hideRegexp.exec(tline)[2]};
                 action = ACTIONS.HIDE;
-                nesting = 1;
+                nesting = 0;
             }
 
+            for (var i = nesting; i < previousNesting; i++) {
+                outerElements.pop();
+            }
             if (previousNesting > nesting || (nesting == previousNesting && nesting > 0)) {
-                relativeTo = previousElementOuter;
+                relativeTo = outerElements[outerElements.length - 1] || previousElementOuter;
             }
             if (nesting > previousNesting) {
-                previousElementOuter = previousElement;
+                if (nesting == 1) previousElementOuter = previousElement;
+                outerElements.push(previousElement);
             }
             cmds.push(new ResequenceCommand(relativeTo, element, position, action));
-            previousElement = element;
-            previousNesting = nesting;
+            if (action != ACTIONS.REMOVE) {
+                previousElement = element;
+                previousNesting = nesting;
+            }
         }
         return cmds;
     }
