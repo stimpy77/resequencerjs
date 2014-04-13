@@ -52,6 +52,7 @@ interpreted by the Resequencer might look something like this:
     </script>
 
 And actually the above output is the current status of this script's work in progress; the commands are parsed out.
+The actual re-sequencing of HTML is not implemented yet, pending some design feedback from .. well, anybody really.
 
 ### Why? ###
 
