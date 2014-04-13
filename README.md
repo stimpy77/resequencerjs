@@ -65,7 +65,10 @@ The rules are very simple:
 1. Line items without an outliner token (`>`, `++`, etc) are assumed to be CSS selectors.
 1. `>` = append inside
 1. `> ^` = prepend inside (or "inside-at-top")
-1. `++` = inject new markup
+1. `++` = add new markup ("create")
+1. `++ ^` = add new markup that prepends all siblings ("create-at-top")
+1. `> ++` = inject new markup ("create-inside")
+1. `> ++ ^` = inject new markup and prepend all children ("create-inside-at-top")
 1. `-` = hide
 1. `--` = remove
 1. `( .. )` = not boobies. comments.
