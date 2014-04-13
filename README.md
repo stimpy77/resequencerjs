@@ -58,6 +58,7 @@ The rules are very simple:
 1. `++` = inject new markup
 1. `-` = hide
 1. `--` = remove
+1. `( .. )` not boobies. comments.
 1. You only need to nest one level deep. If you need to nest deeper then either the base definition is too complex or
    ur doing it rong.
 1. Srsly though if you want to work with things multiple levels deep, you must work with the deeper level stuff
