@@ -62,7 +62,7 @@ restructure the layout without directly changing the original view markup.
 
 The rules are very simple:
 
-1. Line items ignoring the prefixing outliner token (`>`, `++`, etc) are assumed to be CSS selectors.
+1. Line items after their prefixing outliner token (`>`, `++`, etc) are assumed to be CSS selectors.
 1. `>` = append inside
 1. `> ^` = prepend inside (or "inside-at-top")
 1. `++` = add new markup ("create")
