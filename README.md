@@ -49,9 +49,9 @@ interpreted by the Resequencer might look something like this:
     near {find:footer} remove {find:.unwanted}
     near {find:footer} hide {find:.hidden_stuff}
 
-And actually the above output is the current status of this script's work in progress; the commands are parsed out. The
-easy part of using jQuery to put stuff in place is still pending implementation as I'm simultaneously seeking design
-feedback.
+And actually the above output is the current status of this script's work in progress; the commands are only parsed out
+but not yet executing. The easy part of using jQuery to put stuff in place is still pending implementation as I'm
+simultaneously seeking design feedback.
 
 ### Why? ###
 
