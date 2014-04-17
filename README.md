@@ -5,12 +5,12 @@ Restructures HTML DOM according to a very simple sequence outline.
 
 This is an unfinished, non-functioning work in progress. But the idea is simple.
 
-The `<body>` tag should have a `data-resequence` attribute pointing to a `script type="text/plain"` element by ID with a
+The `<body>` tag should have a `data-resequence` attribute pointing to a `script type="text/resequence"` element by ID with a
 '`#`' prefix (or a `data-resequence-src` attribute pointing to a source file).
 
 The referenced element might look something like this:
 
-    <script id="resequence_definition" type="text/plain">
+    <script id="resequence_definition" type="text/resequence">
         nav
         div#moar_leftnav
         .content
