@@ -5,8 +5,7 @@ Restructures HTML DOM according to a very simple sequence outline.
 
 This is an unfinished, non-functioning work in progress. But the idea is simple.
 
-The `<body>` tag should have a `data-resequence` attribute pointing to a `script type="text/resequence"` element by ID with a
-'`#`' prefix (or a `data-resequence-src` attribute pointing to a source file).
+The `<body>` tag should have a `data-resequence-src` attribute pointing to a source file, or else a `<script type="text/resequence>` block with the same content should otherwise be on the page.
 
 The referenced element might look something like this:
 
