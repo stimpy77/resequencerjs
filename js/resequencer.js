@@ -355,12 +355,12 @@
                 }
                 if (rel.length == 0) {
                     console.log("Warning: Relative selector was not found: " + relativeSel);
-                    console.log("         Choosing next parent.")
                     rel = $(document);
                     for (var cn=0; cn<containers.length; cn++) {
                         relativeSel = containers[cn];
                         rel = rel.find(relativeSel);
                     }
+                    console.log("         Choosing next parent: " + rel[0].tagName)
                 }
                 var commonSelSetup = function(hard_relative) {
                     switch (position) {
