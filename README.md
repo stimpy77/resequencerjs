@@ -60,8 +60,8 @@ The rules are very simple:
 1. Line items after their prefixing outliner token (`>`, `++`, etc) are assumed to be CSS selectors.
 1. `>` = append inside
 1. `> ^` = prepend inside (or "inside-at-top")
-1. `++` = add new markup ("create"); if the given element contains src=".." then that content will be injected
-1. `++ ^` = add new markup that prepends all siblings ("create-at-top"); as with ++, src=".." will also inject
+1. `++` = add new markup ("create"); if the given element contains src=".." then that content will be loaded
+1. `++ ^` = add new markup that prepends all siblings ("create-at-top"); as with ++, src=".." will also loaded
 1. `> ++` = inject new markup ("create-inside")
 1. `> ++ ^` = inject new markup and prepend all children ("create-inside-at-top")
 1. `-` = hide
