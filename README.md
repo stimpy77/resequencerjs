@@ -30,7 +30,7 @@ The referenced element might look something like this:
     </script>
 
 The above is what would actually be written by the designer. How the above should be understood in pseudo-code as
-interpreted by the Resequencer might look something like this:
+interpreted by Resequencer might look something like this:
 
     at the top of the body, prepend {find:nav}
     after {find:nav} append {find:div#moar_leftnav}
@@ -48,10 +48,6 @@ interpreted by the Resequencer might look something like this:
     after {create:<div src="inject.htm"></div>} append {find:footer}
     near {find:footer} remove {find:.unwanted}
     near {find:footer} hide {find:.hidden_stuff}
-
-And actually the above output is the current status of this script's work in progress; the commands are only parsed out
-but not yet executing. The easy part of using jQuery to put stuff in place is still pending implementation as I'm
-simultaneously seeking design feedback.
 
 ### Why? ###
 
