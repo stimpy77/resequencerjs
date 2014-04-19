@@ -15,9 +15,9 @@ The referenced element might look something like this:
             > article
             > > .article-body, .articleBody, .article-content, .articleContent
             > > ++ <div id="nested_created"></div> (inject into article)
-            > ^ heading (precedes article content .. gotcha!)
+            > ^ header (precedes article content .. gotcha!)
             > div#stuff
-            > ++ ^ <div id="nested_created"></div> (inject and put at top of content)
+            > ++ ^ <div id="nested_created2"></div> (inject and put at top of content)
             > -- .delete-me (from within content only)
             > - .hide-me (within content)
         ++ <div>Insert this content</div>
@@ -35,10 +35,10 @@ interpreted by Resequencer might look something like this:
     after {find:div#moar_leftnav} append {find:.content}
     inside {find:.content} append {find:article}
     inside {find:article} append {find:.article-body, .articleBody, .article-content, .articleContent}
-    inside {find:.article-body, .articleBody, .article-content, .articleContent} create {create:<div id="nested_created"></div>}
-    inside {find:article} prepend {find:heading}
+    inside {find:article} create {create:<div id="nested_created"></div>}
+    inside {find:.content} prepend {find:header}
     inside {find:.content} append {find:div#stuff}
-    inside {find:.content} prepend-create {create:<div id="nested_created"></div>}
+    inside {find:.content} prepend-create {create:<div id="nested_created2"></div>}
     inside {find:.content} remove {find:.delete-me}
     inside {find:.content} hide {find:.hide-me}
     after {find:.content} create {create:<div>Insert this content</div>}
