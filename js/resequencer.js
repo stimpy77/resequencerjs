@@ -176,6 +176,7 @@
         var previousNesting = 0;
         var outerElements = [];
         var previousElementOuter;
+
         for (var l in cmdlines) {
             var line = cmdlines[l];
             var tline = line;

@@ -47,6 +47,7 @@ interpreted by the Resequencer might look something like this:
     near {find:footer} remove {find:.unwanted}
     near {find:footer} hide {find:.hidden_stuff}
 
+
 ### Why? ###
 
 The goal is to be able to produce a single definition of view markup, one that is SEO friendly and easy to maintain,
