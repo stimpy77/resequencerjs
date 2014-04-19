@@ -1,7 +1,7 @@
 ;
 // Resequencer
 // http://github.com/stimpy77/resequencerjs
-// v0.1
+// v0.1 ~ basic manual tests seem to work fine in Chrome
 (function() {
     "use strict";
     // <body data-resequence="#ID_OF_SCRIPT_CONTAINING_RESEQUENCE">
