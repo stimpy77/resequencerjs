@@ -310,6 +310,19 @@
         }
         return cmds;
     }
+    function loadIntoCreateIfSrc(el) {
+        if (typeof jQuery !== 'undefined') {
+            el = jQuery(el)[0];
+        }
+        var src = el.getAttribute("src");
+        if (src) {
+            if (typeof jQuery !== 'undefined') {
+                jQuery(el).load(src);
+            } else {
+                throw new Error("Loading content with src='..' without jQuery is not yet supported!")
+            }
+        }
+    }
     function processResequence(seqdef) {
         var created = {};
         var containers = ['body'];
@@ -349,9 +362,18 @@
                 for (var elementSelMode in element);
                     elementSel = element[elementSelMode];
                 var rel;
+                var defrel = $(document); // "defrel" var name means default relative given known tree
+                var defrelsel = "body";
+                for (var cn=0; cn<containers.length; cn++) {
+                    defrelsel = containers[cn];
+                    defrel = defrel.find(defrelsel);
+                }
                 switch (relativeSelMode) {
                     case "find":
-                        rel = $(relativeSel);
+                        if (defrelsel != relativeSel) {
+                            rel = defrel.parent().find(relativeSel);
+                        }
+                        else rel = defrel;
                         break;
                     case "create":
                         rel = created[relativeSel];
@@ -359,12 +381,8 @@
                 }
                 if (rel.length == 0) {
                     console.log("Warning: Relative selector was not found: " + relativeSel);
-                    rel = $(document);
-                    for (var cn=0; cn<containers.length; cn++) {
-                        relativeSel = containers[cn];
-                        rel = rel.find(relativeSel);
-                    }
-                    console.log("         Choosing next parent: " + rel[0].tagName)
+                    console.log("         Choosing next parent: " + defrel[0].tagName)
+                    rel = defrel;
                 }
                 var commonSelSetup = function(hard_relative) {
                     switch (position) {
@@ -405,11 +423,13 @@
                                 rel.append(el);
                                 break;
                         }
+                        loadIntoCreateIfSrc(el);
                         break;
                     case ACTIONS.PREPENDCREATE:
                         el = $(elementSel);
                         created[elementSel] = el;
                         rel.prepend(el);
+                        loadIntoCreateIfSrc(el);
                         break;
                     case ACTIONS.APPEND:
                         commonSelSetup();
