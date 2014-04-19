@@ -3,8 +3,8 @@ Resequencer
 
 Restructures HTML DOM according to a very simple sequence outline.
 
-The `<body>` tag should have a `data-resequence` attribute pointing to a `script type="text/resequencer"` element by ID with a
-'`#`' prefix (or a `data-resequence-src` attribute pointing to a source file).
+The `<body>` tag should have a `data-resequence-src` attribute pointing to a source file, or a
+`<script type="text/resequencer">` tag should exist in the document.
 
 The referenced element might look something like this:
 
