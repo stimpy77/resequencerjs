@@ -27,7 +27,7 @@ The referenced element might look something like this:
         - .hidden_stuff (hide)
     </script>
 
-The above is what would actually be written by the designer. How the above should be understood in pseudo-code as
+**The above is what would actually be written by the designer.** How the above should be understood in pseudo-code as
 interpreted by Resequencer might look something like this:
 
     at the top of the body, prepend {find:nav}
