@@ -12,7 +12,7 @@
         var seqscript;
         for (var s in scriptTags) {
             var ta = scriptTags[s].getAttribute("type");
-            if (!!ta) {
+            if (!!ta && ta == "text/resequencer") {
                 resequenceEl = scriptTags[s];
                 break;
             }
