@@ -1,4 +1,8 @@
-;(function() {
+;
+// Resequencer
+// http://github.com/stimpy77/resequencerjs
+// v0.1
+(function() {
     "use strict";
     // <body data-resequence="#ID_OF_SCRIPT_CONTAINING_RESEQUENCE">
     // or
