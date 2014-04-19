@@ -6,9 +6,17 @@
     var g = window;
     var findBody, body = (findBody = document.getElementsByTagName('body')).length > 0 ? findBody[0] : null;
     var resequenceEl, resequenceSrc;
-    if (body == null || (
-        (resequenceSrc = body.getAttribute("data-resequence-src")) == null &&
-        (resequenceEl = body.getAttribute("data-resequence")) == null)) {
+    if ((resequenceSrc = body.getAttribute("data-resequence-src")) == null &&
+        (resequenceEl = body.getAttribute("data-resequence")) == null) {
+        var scriptTags = document.getElementsByTagName("script");
+        var seqscript;
+        for (var s in scriptTags) {
+            var ta = scriptTags[s].getAttribute("type");
+            if (!!ta) {
+                resequenceEl = scriptTags[s];
+                break;
+            }
+        }
         return;
     }
     var _opts = {
@@ -72,7 +80,6 @@
             }
 
             // finally ...
-            debugger;
             var seqdefstr = seqdef;
             seqdef = parseResequenceDefinition(seqdef);
             var description = "";
@@ -85,7 +92,6 @@
             $('body').css('margin', '10px');
             $('pre#input-RO').html(seqdefstr.replace(/\</g, '&lt;'));
             $('pre#output').html(description.replace(/\</g, '&lt;'));
-            debugger;
             processResequence(seqdef, targetEl);
         }
     }
@@ -103,11 +109,13 @@
         || document.readyState == "interactive") {
         resequence();
     }
-    function ResequenceCommand(relativeToThis, element, position, action) {
+    function ResequenceCommand(relativeToThis, element, position, action, container, nesting) {
         this.relative = relativeToThis;
         this.element = element;
         this.position = position;
         this.action = action;
+        this.container = container;
+        this.nesting = nesting;
         this.toString = function() {
             var relativeToThisStr = relativeToThis;
             if (typeof relativeToThis == 'object') {
@@ -185,13 +193,13 @@
                 position = POSITIONS.INSIDE;
                 element = {create: createInsideAtTopL3Regexp.exec(tline)[2]};
                 action = ACTIONS.PREPENDCREATE;
-                nesting = 3;
+                nesting = 2;
             }
             else if (createInsideL3Regexp.test(tline)) {
                 position = POSITIONS.INSIDE;
                 element = {create: createInsideL3Regexp.exec(tline)[2]};
                 action = ACTIONS.CREATE;
-                nesting = 3;
+                nesting = 2;
             }
             else if (inside2Regexp.test(tline)) {
                 position = POSITIONS.INSIDE;
@@ -249,7 +257,7 @@
                 position = POSITIONS.INSIDE;
                 element = {find: insideTopRegexp.exec(tline)[2]};
                 action = ACTIONS.PREPEND;
-                nesting = 2;
+                nesting = 1;
             }
             else if (insideRegexp.test(tline)) {
                 position = POSITIONS.INSIDE;
@@ -284,7 +292,12 @@
                 if (nesting == 1) previousElementOuter = previousElement;
                 outerElements.push(previousElement);
             }
-            cmds.push(new ResequenceCommand(relativeTo, element, position, action));
+            var container = outerElements.length >= 1
+                ? outerElements[outerElements.length - 1]
+                : {find: 'body'};
+            for (var cnr in container);
+            container = container[cnr];
+            cmds.push(new ResequenceCommand(relativeTo, element, position, action, container, nesting));
             if (action != ACTIONS.REMOVE) {
                 previousElement = element;
                 previousNesting = nesting;
@@ -293,6 +306,144 @@
         return cmds;
     }
     function processResequence(seqdef) {
+        var created = {};
+        var containers = ['body'];
+        var prevNesting = 1;
+        for (var c=0; c<seqdef.length; c++) {
+            var cmd = seqdef[c];
+            if (relative === undefined) {
+                cmd = new ResequenceCommand(
+                    {find: 'body'},
+                    cmd.element,
+                    POSITIONS.INSIDE,
+                    cmd.action == ACTIONS.APPEND || cmd.action == ACTIONS.PREPEND
+                        ? ACTIONS.PREPEND
+                        : cmd.action
+                );
+            }
+            var action = cmd.action;
+            var element = cmd.element,
+                el;
+            var position = cmd.position;
+            var relative = cmd.relative;
+            var container = cmd.container;
+            var nesting = (cmd.nesting || 0) + 1;
+            for (var n=prevNesting; n>nesting; n--) {
+                containers.pop();
+            }
+            if (nesting > prevNesting) {
+                containers.push(container);
+            }
 
+            if (typeof jQuery != 'undefined') {
+                var $ = jQuery;
+                var relativeSelMode, relativeSel,
+                    elementSelMode, elementSel;
+                for (var relativeSelMode in relative)
+                    relativeSel = relative[relativeSelMode];
+                for (var elementSelMode in element);
+                    elementSel = element[elementSelMode];
+                var rel;
+                switch (relativeSelMode) {
+                    case "find":
+                        rel = $(relativeSel);
+                        break;
+                    case "create":
+                        rel = created[relativeSel];
+                        break;
+                }
+                if (rel.length == 0) {
+                    console.log("Warning: Relative selector was not found: " + relativeSel);
+                    console.log("         Choosing next parent.")
+                    rel = $(document);
+                    for (var cn=0; cn<containers.length; cn++) {
+                        relativeSel = containers[cn];
+                        rel = rel.find(relativeSel);
+                    }
+                }
+                var commonSelSetup = function(hard_relative) {
+                    switch (position) {
+                        case POSITIONS.NEAR:
+                            rel = rel.parent();
+                            el = rel.find(elementSel);
+                            break;
+                        case POSITIONS.INSIDE:
+                            if (!hard_relative) {
+                                el = $(elementSel);
+                            } else {
+                                el = rel.find(elementSel);
+                            }
+                            break;
+                        case POSITIONS.AFTER:
+                            if (!hard_relative) {
+                                el = $(elementSel);
+                            } else {
+                                el = rel.nextAll(elementSel);
+                                if (el.length == 0) el = rel.find(elementSel);
+                            }
+                            break;
+                    }
+                    if (el.length == 0) {
+                        console.log("Warning: Selected element not found: " + elementSel);
+                    }
+                }
+                switch (action) {
+                    case ACTIONS.CREATE:
+                        el = $(elementSel);
+                        created[elementSel] = el;
+                        switch (position) {
+                            case POSITIONS.AFTER:
+                            case POSITIONS.NEAR:
+                                rel.after(el);
+                                break;
+                            case POSITIONS.INSIDE:
+                                rel.append(el);
+                                break;
+                        }
+                        break;
+                    case ACTIONS.PREPENDCREATE:
+                        el = $(elementSel);
+                        created[elementSel] = el;
+                        rel.prepend(el);
+                        break;
+                    case ACTIONS.APPEND:
+                        commonSelSetup();
+                        switch (position) {
+                            case POSITIONS.AFTER:
+                            case POSITIONS.NEAR:
+                                rel.after(el);
+                                break;
+                            case POSITIONS.INSIDE:
+                                rel.append(el);
+                                break;
+                        }
+                        break;
+                    case ACTIONS.HIDE:
+                        commonSelSetup(true);
+                        el.hide();
+                        break;
+                    case ACTIONS.PREPEND:
+                        commonSelSetup();
+                        switch (position) {
+                            case POSITIONS.AFTER:
+                            case POSITIONS.NEAR:
+                                rel.before(el);
+                                break;
+                            case POSITIONS.INSIDE:
+                                rel.prepend(el);
+                                break;
+                        }
+                        break;
+                    case ACTIONS.REMOVE:
+                        commonSelSetup(true);
+                        el.remove();
+                        break;
+                }
+                prevNesting = nesting;
+
+            } else {
+                throw new Error("Not yet implemented without jQuery");
+            }
+        }
     }
 }());

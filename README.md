@@ -3,8 +3,6 @@ Resequencer
 
 Restructures HTML DOM according to a very simple sequence outline.
 
-This is an unfinished, non-functioning work in progress. But the idea is simple.
-
 The `<body>` tag should have a `data-resequence` attribute pointing to a `script type="text/plain"` element by ID with a
 '`#`' prefix (or a `data-resequence-src` attribute pointing to a source file).
 
@@ -48,10 +46,6 @@ interpreted by the Resequencer might look something like this:
     after {create:<div src="inject.htm"></div>} append {find:footer}
     near {find:footer} remove {find:.unwanted}
     near {find:footer} hide {find:.hidden_stuff}
-
-And actually the above output is the current status of this script's work in progress; the commands are only parsed out
-but not yet executing. The easy part of using jQuery to put stuff in place is still pending implementation as I'm
-simultaneously seeking design feedback.
 
 ### Why? ###
 

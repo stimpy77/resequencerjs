@@ -11,8 +11,22 @@
 
     <header><h1>This is the header</h1></header>
 
+    <div class="content">
+        <div id="unwanted" class="delete-me">
+            This is some stuff I don't want
+        </div>
+        <div id="hidden_stuff" class="hide-me">
+            This is some stuff I want, but it should be rendered as display: none
+        </div>
+    </div>
     <div id="stuff">
         This is some stuff
+    </div>
+    <div class="unwanted">
+        This is some stuff I don't want, delete it
+    </div>
+    <div class="hidden_stuff">
+        This is some stuff I want, but it should be rendered as display: none
     </div>
 
     <article>
@@ -25,20 +39,13 @@
             <li>Nav item 2</li>
         </ul>
     </nav>
-    <div id="unwanted">
-        This is some stuff I don't want
-    </div>
-    <div id="hidden_stuff">
-        This is some stuff I want, but it should be rendered as display: none
-    </div>
-
     <div id="moar_leftnav">
         <ul>
             <li>Nav item 1</li>
             <li>Nav item 2</li>
         </ul>
     </div>
-
+<!--<footer>teh footer</footer>-->
     <script id="resequence_definition" type="text/plain">
         nav
         div#moar_leftnav
@@ -46,7 +53,7 @@
             > article
             > > .article-body, .articleBody, .article-content, .articleContent
             > > ++ <div id="nested_created"></div> (inject into article)
-            > ^ heading (precedes article content .. gotcha!)
+            > ^ header (precedes article content .. gotcha!)
             > div#stuff
             > ++ ^ <div id="nested_created"></div> (inject and put at top of content)
             > -- .delete-me (from within content only)
