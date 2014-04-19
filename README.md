@@ -1,7 +1,8 @@
 Resequencer
 =============
 
-Restructures HTML DOM according to a very simple sequence outline. Current version requires jQuery.
+Restructures HTML DOM according to a very simple sequence outline. Current version requires jQuery and was only tested
+in Chrome.
 
 The `<body>` tag should have a `data-resequence-src` attribute pointing to a source file, or a
 `<script type="text/resequencer">` tag should exist in the document.
